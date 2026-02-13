@@ -2,6 +2,7 @@
   import { courseStore, allBadges } from '$lib/stores/course';
   import { modules } from '$lib/data/modules';
   import BranchingScenario from '$lib/components/BranchingScenario.svelte';
+  import CodePlayground from '$lib/components/CodePlayground.svelte';
   import ModuleNav from '$lib/components/ModuleNav.svelte';
   import SourcesSection from '$lib/components/SourcesSection.svelte';
   import VocabularyFloat from '$lib/components/VocabularyFloat.svelte';
@@ -118,6 +119,20 @@
         ]
       }
     }
+  };
+
+  const playgroundExercise = {
+    id: 'mod4-config-table',
+    title: 'Ejercicio: Tabla de configuracion',
+    instructions: 'Crea una tabla de configuracion para un "plugin" con las claves: enabled (true), theme ("tokyonight"), indent (4), y features como subtabla con lsp (true) y format (false). Imprime config.theme, config.indent y config.features.lsp.',
+    initialCode: '-- Crea la tabla de configuracion\nlocal config = {\n  \n}\n\n-- Imprime los valores\n',
+    expectedOutput: 'tokyonight\n4\ntrue',
+    hints: [
+      'Las tablas usan clave = valor separados por comas',
+      'Una subtabla se define como features = { lsp = true, format = false }',
+      'Accede con config.theme, config.features.lsp, etc.'
+    ],
+    solution: 'local config = {\n  enabled = true,\n  theme = "tokyonight",\n  indent = 4,\n  features = {\n    lsp = true,\n    format = false,\n  },\n}\n\nprint(config.theme)\nprint(config.indent)\nprint(config.features.lsp)'
   };
 
   $effect(() => {
@@ -652,6 +667,18 @@ map(<span class="text-forge-success">"v"</span>, <span class="text-forge-success
       </div>
     </section>
   {/if}
+
+  <!-- ========================================== -->
+  <!-- PLAYGROUND                                  -->
+  <!-- ========================================== -->
+  <section class="mb-10 fade-in">
+    <h2 class="text-xl font-bold text-forge-accent mb-4">Practica: Tabla de configuracion</h2>
+    <p class="text-sm text-forge-muted mb-4">
+      Aunque no puedes ejecutar vim.opt en el navegador, las tablas de configuracion son Lua puro.
+      Practica creando una estructura de config como las que usarias en tu init.lua.
+    </p>
+    <CodePlayground exercise={playgroundExercise} />
+  </section>
 
   <!-- ========================================== -->
   <!-- SEPARADOR ANTES DEL ESCENARIO              -->

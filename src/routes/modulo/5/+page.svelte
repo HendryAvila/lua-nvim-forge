@@ -44,6 +44,7 @@
   const questions = [
     {
       question: 'Que devuelve vim.api.nvim_buf_get_lines(0, 0, -1, false)?',
+      codeBlock: 'local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)\nfor i, line in ipairs(lines) do\n  print(i, line)\nend',
       options: [
         {
           text: 'Todas las lineas del buffer actual como una tabla de strings',
@@ -106,6 +107,7 @@
     },
     {
       question: 'Que funcion de la API se usa para crear una ventana flotante en Neovim?',
+      codeBlock: 'local buf = vim.api.nvim_create_buf(false, true)\nvim.api.????(buf, true, {\n  relative = "editor",\n  width = 40, height = 10,\n  row = 5, col = 10,\n  style = "minimal",\n  border = "rounded"\n})',
       options: [
         {
           text: 'nvim_create_win',
@@ -137,6 +139,7 @@
     },
     {
       question: 'Que hace la funcion nvim_create_autocmd?',
+      codeBlock: 'vim.api.nvim_create_autocmd("BufWritePre", {\n  pattern = "*.lua",\n  callback = function()\n    vim.lsp.buf.format()\n  end,\n})',
       options: [
         {
           text: 'Crea un comando de usuario personalizado',

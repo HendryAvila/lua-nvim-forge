@@ -2,6 +2,7 @@
   import { courseStore, allBadges } from '$lib/stores/course';
   import { modules } from '$lib/data/modules';
   import Quiz from '$lib/components/Quiz.svelte';
+  import CodePlayground from '$lib/components/CodePlayground.svelte';
   import ModuleNav from '$lib/components/ModuleNav.svelte';
   import SourcesSection from '$lib/components/SourcesSection.svelte';
   import VocabularyFloat from '$lib/components/VocabularyFloat.svelte';
@@ -29,6 +30,7 @@
   const quizQuestions = [
     {
       question: 'Que es un closure en Lua?',
+      codeBlock: 'local function crear_saludo(prefijo)\n  return function(nombre)\n    return prefijo .. ", " .. nombre\n  end\nend\n\nlocal hola = crear_saludo("Hola")\nprint(hola("mundo"))  -- "Hola, mundo"',
       options: [
         {
           text: 'Una funcion que captura variables locales externas (upvalues) de su scope',
@@ -36,7 +38,7 @@
           explanation: 'Correcto. Un closure es una funcion que "cierra" sobre las variables de su entorno. Esas variables externas capturadas se llaman upvalues y persisten mientras el closure exista.'
         },
         {
-          text: 'Una funcion que se ejecuta inmediatamente al ser definida',
+          text: 'Una funcion que se ejecuta inmediatamente al ser definida, conocida como IIFE en otros lenguajes',
           correct: false,
           explanation: 'Eso seria una IIFE (Immediately Invoked Function Expression). Un closure se refiere a la captura de variables externas, no al momento de ejecucion.'
         },
@@ -83,6 +85,7 @@
     },
     {
       question: 'Como se define una funcion anonima en Lua?',
+      codeBlock: 'local duplicar = function(x) return x * 2 end\nprint(duplicar(5))  -- 10',
       options: [
         {
           text: 'lambda(x) return x * 2 end',
@@ -164,9 +167,10 @@
     },
     {
       question: 'Cual es el patron estandar para crear un modulo en Lua?',
+      codeBlock: '-- archivo: mimodulo.lua\nlocal M = {}\n\nfunction M.saludar(nombre)\n  return "Hola " .. nombre\nend\n\nreturn M',
       options: [
         {
-          text: 'module("nombre", package.seeall)',
+          text: 'module("nombre", package.seeall) para registrar funciones globales del modulo',
           correct: false,
           explanation: 'Esa funcion module() existia en Lua 5.1 pero fue deprecada. El patron moderno y recomendado es crear una tabla local, agregarle funciones y retornarla.'
         },
@@ -215,6 +219,48 @@
       ],
       source: 'Programming in Lua - Functions',
       sourceUrl: 'https://www.lua.org/pil/5.2.html'
+    }
+  ];
+
+  const playgroundExercises = [
+    {
+      id: 'mod3-funciones',
+      title: 'Ejercicio: Funciones basicas',
+      instructions: 'Crea una funcion llamada "doble" que reciba un numero y retorne el doble. Luego crea otra llamada "aplicar" que reciba una funcion y un valor, y retorne el resultado de aplicar la funcion al valor. Imprime aplicar(doble, 21).',
+      initialCode: '-- Define la funcion doble\n\n\n-- Define la funcion aplicar\n\n\n-- Imprime el resultado\n',
+      expectedOutput: '42',
+      hints: [
+        'local function doble(n) return n * 2 end',
+        'aplicar recibe una funcion como primer argumento y la llama con el valor',
+        'print(aplicar(doble, 21)) deberia imprimir 42'
+      ],
+      solution: 'local function doble(n)\n  return n * 2\nend\n\nlocal function aplicar(func, valor)\n  return func(valor)\nend\n\nprint(aplicar(doble, 21))'
+    },
+    {
+      id: 'mod3-closure',
+      title: 'Ejercicio: Closure contador',
+      instructions: 'Crea una funcion "crear_contador" que retorne una funcion. Cada vez que llames a la funcion retornada, debe incrementar un contador interno y retornar el valor actual. Crea un contador, llamalo 3 veces e imprime cada resultado.',
+      initialCode: '-- Crea la funcion crear_contador\n\n\n-- Crea un contador y llamalo 3 veces\n',
+      expectedOutput: '1\n2\n3',
+      hints: [
+        'La funcion externa debe tener una variable local (el upvalue)',
+        'La funcion interna (closure) modifica y retorna ese upvalue',
+        'Cada llamada incrementa el contador en 1'
+      ],
+      solution: 'local function crear_contador()\n  local cuenta = 0\n  return function()\n    cuenta = cuenta + 1\n    return cuenta\n  end\nend\n\nlocal contador = crear_contador()\nprint(contador())\nprint(contador())\nprint(contador())'
+    },
+    {
+      id: 'mod3-modulo',
+      title: 'Ejercicio: Patron de modulo',
+      instructions: 'Crea un modulo "calc" usando el patron local M = {}. Agrega dos funciones al modulo: "sumar(a, b)" y "multiplicar(a, b)". Luego usa el modulo para imprimir calc.sumar(3, 4) y calc.multiplicar(5, 6).',
+      initialCode: '-- Crea el modulo calc\n\n\n-- Agrega funciones sumar y multiplicar\n\n\n-- Usa el modulo\n',
+      expectedOutput: '7\n30',
+      hints: [
+        'Empieza con local M = {}',
+        'Agrega funciones con M.sumar = function(a, b) ... end o function M.sumar(a, b) ... end',
+        'No necesitas hacer return M en este ejercicio, puedes usar M directamente'
+      ],
+      solution: 'local calc = {}\n\nfunction calc.sumar(a, b)\n  return a + b\nend\n\nfunction calc.multiplicar(a, b)\n  return a * b\nend\n\nprint(calc.sumar(3, 4))\nprint(calc.multiplicar(5, 6))'
     }
   ];
 </script>
@@ -736,6 +782,24 @@ vim.keymap.set(<span class="text-forge-success">"n"</span>, <span class="text-fo
         el modulo solo se carga cuando realmente presionas la tecla, no cuando Neovim arranca.
         Como <span class="code-inline">require()</span> cachea, la segunda vez es instantanea.
       </p>
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- PLAYGROUNDS                                 -->
+  <!-- ========================================== -->
+  <section class="mb-12 slide-in">
+    <h2 class="text-2xl font-black mb-6 flex items-center gap-2">
+      <span class="text-forge-accent">⌨️</span> Practica: Escribe codigo Lua
+    </h2>
+    <p class="text-forge-muted mb-6">
+      Pon a prueba tus conocimientos de funciones, closures y modulos escribiendo codigo real.
+    </p>
+
+    <div class="space-y-6">
+      {#each playgroundExercises as exercise}
+        <CodePlayground {exercise} />
+      {/each}
     </div>
   </section>
 

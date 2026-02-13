@@ -10,6 +10,8 @@
     options: QuizOption[];
     source?: string;
     sourceUrl?: string;
+    codeBlock?: string;
+    codeLanguage?: string;
   }
 
   interface Props {
@@ -67,6 +69,15 @@
     </div>
 
     <h3 class="text-lg font-bold mb-4">{currentQuestion.question}</h3>
+
+    {#if currentQuestion.codeBlock}
+      <div class="mb-4 rounded-lg overflow-hidden border border-forge-border">
+        <div class="bg-forge-darker px-3 py-1.5 border-b border-forge-border">
+          <span class="text-xs text-forge-muted font-mono">{currentQuestion.codeLanguage || 'lua'}</span>
+        </div>
+        <pre class="bg-[#1a1a2e] p-4 text-sm font-mono leading-relaxed overflow-x-auto text-forge-text">{currentQuestion.codeBlock}</pre>
+      </div>
+    {/if}
 
     <div class="space-y-3">
       {#each currentQuestion.options as option, i}

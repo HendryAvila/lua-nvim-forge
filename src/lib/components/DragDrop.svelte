@@ -21,8 +21,17 @@
 
   let { items, zones, onComplete, instruction = 'Arrastra cada elemento a su zona correcta' }: Props = $props();
 
+  function shuffle<T>(arr: T[]): T[] {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
   let placements = $state<Record<string, string>>({});
-  let availableItems = $state<DragItem[]>([...items]);
+  let availableItems = $state<DragItem[]>(shuffle(items));
   let draggedItemId = $state<string | null>(null);
   let checked = $state(false);
   let results = $state<Record<string, boolean>>({});
@@ -76,7 +85,7 @@
 
   function reset() {
     placements = {};
-    availableItems = [...items];
+    availableItems = shuffle(items);
     checked = false;
     results = {};
   }

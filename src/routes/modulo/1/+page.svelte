@@ -2,6 +2,7 @@
   import { courseStore, allBadges } from '$lib/stores/course';
   import { modules } from '$lib/data/modules';
   import Quiz from '$lib/components/Quiz.svelte';
+  import CodePlayground from '$lib/components/CodePlayground.svelte';
   import ModuleNav from '$lib/components/ModuleNav.svelte';
   import SourcesSection from '$lib/components/SourcesSection.svelte';
   import VocabularyFloat from '$lib/components/VocabularyFloat.svelte';
@@ -18,7 +19,7 @@
       question: 'En Lua, cual es el valor de una variable que NO ha sido declarada ni asignada?',
       options: [
         { text: '0', correct: false, explanation: 'En otros lenguajes como C, las variables no inicializadas pueden ser 0, pero en Lua el valor por defecto es nil.' },
-        { text: 'undefined', correct: false, explanation: 'undefined es un concepto de JavaScript. En Lua, el equivalente se llama nil.' },
+        { text: 'undefined (el valor por defecto de JavaScript)', correct: false, explanation: 'undefined es un concepto de JavaScript. En Lua, el equivalente se llama nil.' },
         { text: 'nil', correct: true, explanation: 'Correcto! En Lua, cualquier variable que no ha sido asignada tiene el valor nil, que representa la ausencia de valor.' },
         { text: 'false', correct: false, explanation: 'false es un valor booleano valido. Las variables no asignadas no son false, son nil.' }
       ],
@@ -31,13 +32,14 @@
         { text: '!=', correct: false, explanation: '!= se usa en lenguajes como C, Java y JavaScript. Lua tiene su propia sintaxis.' },
         { text: '~=', correct: true, explanation: 'Correcto! Lua usa ~= como operador de desigualdad. Es unico de Lua y diferente a la mayoria de lenguajes.' },
         { text: '<>', correct: false, explanation: '<> se usa en lenguajes como Pascal y SQL, no en Lua.' },
-        { text: 'not ==', correct: false, explanation: 'Aunque not es un operador logico valido en Lua, not == no es la forma correcta de comparar desigualdad.' }
+        { text: 'not == (negacion seguida de comparacion)', correct: false, explanation: 'Aunque not es un operador logico valido en Lua, not == no es la forma correcta de comparar desigualdad.' }
       ],
       source: 'Lua 5.1 Reference Manual',
       sourceUrl: 'https://www.lua.org/manual/5.1/manual.html#2.5.2'
     },
     {
       question: 'Que hace el operador .. (dos puntos) en Lua?',
+      codeBlock: 'local a = "Hola"\nlocal b = " mundo"\nlocal c = a .. b\nprint(c)',
       options: [
         { text: 'Es un operador de rango (como en Python)', correct: false, explanation: 'En Lua no existe un operador de rango nativo. .. tiene otro proposito.' },
         { text: 'Concatena (une) dos strings', correct: true, explanation: 'Correcto! El operador .. es el operador de concatenacion de strings en Lua. "Hola" .. " mundo" produce "Hola mundo".' },
@@ -60,6 +62,7 @@
     },
     {
       question: 'Que hace la palabra clave local al declarar una variable?',
+      codeBlock: 'local x = 10\n\nif true then\n  local y = 20\n  print(x, y)  -- ambas visibles aqui\nend\n\nprint(x)  -- visible\nprint(y)  -- ???',
       options: [
         { text: 'Hace la variable inmutable (constante)', correct: false, explanation: 'local no hace la variable constante. Puedes reasignar una variable local sin problema.' },
         { text: 'Limita el scope de la variable al bloque actual', correct: true, explanation: 'Correcto! local restringe la visibilidad de la variable al bloque donde fue declarada (funcion, if, for, etc). Sin local, la variable es global y accesible desde cualquier parte.' },
@@ -71,6 +74,7 @@
     },
     {
       question: 'Que resultado da la expresion "10" + 5 en Lua?',
+      codeBlock: 'print("10" + 5)\nprint(type("10" + 5))',
       options: [
         { text: '"105" (concatenacion)', correct: false, explanation: 'Eso ocurriria en JavaScript con +. En Lua, el operador + es siempre aritmetico y Lua intenta convertir strings a numeros.' },
         { text: '15 (coercion automatica)', correct: true, explanation: 'Correcto! Lua aplica coercion automatica: si un string puede interpretarse como numero en una operacion aritmetica, lo convierte. "10" se convierte a 10 y el resultado es 15.' },
@@ -79,6 +83,48 @@
       ],
       source: 'Programming in Lua - Expressions',
       sourceUrl: 'https://www.lua.org/pil/3.1.html'
+    }
+  ];
+
+  const playgroundExercises = [
+    {
+      id: 'mod1-variables',
+      title: 'Ejercicio: Variables y tipos',
+      instructions: 'Declara una variable local llamada "nombre" con tu nombre, otra llamada "edad" con un numero, y una llamada "activo" con true. Luego imprime las tres con print().',
+      initialCode: '-- Declara tus variables aqui\n\n\n-- Imprime los valores\n',
+      expectedOutputRegex: '.+\\n\\d+\\ntrue',
+      hints: [
+        'Usa la palabra clave "local" para declarar variables',
+        'print() puede imprimir cualquier tipo de dato',
+        'Ejemplo: local x = 42'
+      ],
+      solution: 'local nombre = "Carlos"\nlocal edad = 25\nlocal activo = true\n\nprint(nombre)\nprint(edad)\nprint(activo)'
+    },
+    {
+      id: 'mod1-operadores',
+      title: 'Ejercicio: Operadores',
+      instructions: 'Calcula el area de un rectangulo de base 7 y altura 3. Luego verifica si el area es mayor a 20 e imprime ambos resultados.',
+      initialCode: '-- Calcula el area\nlocal base = 7\nlocal altura = 3\n\n-- Tu codigo aqui\n',
+      expectedOutput: '21\ntrue',
+      hints: [
+        'El area de un rectangulo es base * altura',
+        'Usa > para comparar si es mayor',
+        'Imprime el area y luego el resultado de la comparacion'
+      ],
+      solution: 'local base = 7\nlocal altura = 3\n\nlocal area = base * altura\nprint(area)\nprint(area > 20)'
+    },
+    {
+      id: 'mod1-strings',
+      title: 'Ejercicio: Strings y concatenacion',
+      instructions: 'Crea una variable "editor" con el valor "Neovim" y otra "version" con el numero 10. Usa el operador .. para concatenar e imprimir el mensaje "Editor: Neovim v10".',
+      initialCode: '-- Define las variables\n\n\n-- Concatena e imprime el mensaje\n-- Formato esperado: "Editor: Neovim v10"\n',
+      expectedOutput: 'Editor: Neovim v10',
+      hints: [
+        'El operador de concatenacion en Lua es .. (dos puntos)',
+        'Lua convierte numeros a strings automaticamente en concatenacion',
+        'Construye: "Editor: " .. editor .. " v" .. version'
+      ],
+      solution: 'local editor = "Neovim"\nlocal version = 10\n\nprint("Editor: " .. editor .. " v" .. version)'
     }
   ];
 
@@ -683,6 +729,25 @@ print(tonumber("abc"))  -- nil</pre>
         es mejor usar <code class="code-inline">tonumber()</code> y <code class="code-inline">tostring()</code>
         explicitamente. Hace tu codigo mas legible y evita sorpresas.
       </p>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- PLAYGROUNDS                                   -->
+  <!-- ============================================ -->
+  <section class="mb-12 slide-in">
+    <h2 class="text-2xl font-black mb-6 flex items-center gap-2">
+      <span class="text-forge-accent">⌨️</span> Practica: Escribe codigo Lua
+    </h2>
+    <p class="text-forge-muted mb-6">
+      Ahora te toca escribir codigo. Estos ejercicios se ejecutan en un interprete Lua real
+      directamente en tu navegador.
+    </p>
+
+    <div class="space-y-6">
+      {#each playgroundExercises as exercise}
+        <CodePlayground {exercise} />
+      {/each}
     </div>
   </section>
 

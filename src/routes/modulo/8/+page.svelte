@@ -40,6 +40,7 @@
   const quizQuestions = [
     {
       question: 'Que funcion llama lazy.nvim para configurar un plugin?',
+      codeBlock: 'local M = {}\n\nM.defaults = { theme = "default" }\n\nfunction M.????(opts)\n  M.config = vim.tbl_deep_extend("force", M.defaults, opts or {})\nend\n\nreturn M',
       options: [
         { text: 'init()', correct: false, explanation: 'init() es una funcion de ciclo de vida de lazy.nvim que se ejecuta durante el inicio, pero no es la que recibe la configuracion del usuario.' },
         { text: 'setup()', correct: true, explanation: 'Correcto! El patron estandar es que el plugin exponga una funcion setup(opts) que recibe la tabla de configuracion del usuario y la mezcla con los valores por defecto.' },
@@ -51,6 +52,7 @@
     },
     {
       question: 'Que hace vim.tbl_deep_extend("force", a, b)?',
+      codeBlock: 'local defaults = { indent = 2, theme = "dark" }\nlocal user = { theme = "tokyonight", wrap = true }\nlocal result = vim.tbl_deep_extend("force", defaults, user)\n-- result = ???',
       options: [
         { text: 'Copia solo las claves que existen en a', correct: false, explanation: 'vim.tbl_deep_extend con "force" no filtra por claves existentes, sino que mezcla TODAS las claves de b en a.' },
         { text: 'Mezcla recursivamente b en a, donde b tiene prioridad', correct: true, explanation: 'Correcto! "force" significa que los valores de la ultima tabla (b) sobreescriben los de la primera (a). La mezcla es recursiva (deep), asi que las tablas anidadas tambien se mezclan.' },
@@ -84,6 +86,7 @@
     },
     {
       question: 'En que directorio busca lazy.nvim el codigo que se auto-carga (commands, autocommands)?',
+      codeBlock: 'mi-plugin/\n├── lua/mi-plugin/init.lua\n├── ????/mi-plugin.lua     <-- auto-carga\n├── doc/mi-plugin.txt\n└── tests/',
       options: [
         { text: 'lua/', correct: false, explanation: 'lua/ contiene los modulos que se cargan con require(). El codigo de auto-carga va en otro directorio.' },
         { text: 'plugin/', correct: true, explanation: 'Correcto! Los archivos en plugin/ se ejecutan automaticamente cuando Neovim carga el plugin. Ahi van los comandos de usuario, autocommands y todo lo que debe existir sin require() explicito.' },

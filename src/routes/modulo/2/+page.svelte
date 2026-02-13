@@ -1,6 +1,7 @@
 <script lang="ts">
   import { courseStore, allBadges } from '$lib/stores/course';
   import { modules } from '$lib/data/modules';
+  import CodePlayground from '$lib/components/CodePlayground.svelte';
   import DragDrop from '$lib/components/DragDrop.svelte';
   import ModuleNav from '$lib/components/ModuleNav.svelte';
   import SourcesSection from '$lib/components/SourcesSection.svelte';
@@ -29,6 +30,35 @@
     { id: 'z4', label: 'Obtiene la longitud del array', correctItemId: 'hash' },
     { id: 'z5', label: 'Acceso con sintaxis de punto', correctItemId: 'dot' },
     { id: 'z6', label: 'Acceso con clave dinamica', correctItemId: 'bracket' }
+  ];
+
+  const playgroundExercises = [
+    {
+      id: 'mod2-tablas',
+      title: 'Ejercicio: Crear y manipular un array',
+      instructions: 'Crea una tabla llamada "plugins" con 3 plugins de Neovim (strings). Luego agrega un cuarto plugin al final usando table.insert(). Imprime la cantidad total y el ultimo plugin agregado.',
+      initialCode: '-- Crea tu tabla de plugins\n\n\n-- Agrega un cuarto plugin\n\n\n-- Imprime la cantidad y el ultimo\n',
+      expectedOutputRegex: '4\\n.+',
+      hints: [
+        'Crea la tabla con local plugins = { "nombre1", "nombre2", "nombre3" }',
+        'Usa table.insert(plugins, "nombre4") para agregar al final',
+        'Usa #plugins para obtener la longitud y plugins[#plugins] para el ultimo'
+      ],
+      solution: 'local plugins = { "telescope", "treesitter", "lsp" }\n\ntable.insert(plugins, "cmp")\n\nprint(#plugins)\nprint(plugins[#plugins])'
+    },
+    {
+      id: 'mod2-iteracion',
+      title: 'Ejercicio: Iterar con ipairs',
+      instructions: 'Crea una tabla con los numeros 10, 20, 30, 40. Usa un for con ipairs() para imprimir cada indice y su valor en el formato "indice: valor" (ejemplo: "1: 10").',
+      initialCode: '-- Crea tu tabla de numeros\n\n\n-- Itera con ipairs e imprime "indice: valor"\n',
+      expectedOutput: '1: 10\n2: 20\n3: 30\n4: 40',
+      hints: [
+        'for i, v in ipairs(tabla) do ... end',
+        'Usa el operador .. para concatenar: i .. ": " .. v',
+        'ipairs itera indices numericos en orden desde 1'
+      ],
+      solution: 'local numeros = { 10, 20, 30, 40 }\n\nfor i, v in ipairs(numeros) do\n  print(i .. ": " .. v)\nend'
+    }
   ];
 
   function completeModule(correct: number, total: number) {
@@ -409,6 +439,21 @@ require("telescope").setup({'{'}
           configurar y extender tu editor.
         </p>
       </div>
+    </div>
+  </section>
+
+  <!-- ===================== PLAYGROUNDS ===================== -->
+  <section class="mb-10 fade-in">
+    <h2 class="text-2xl font-bold text-forge-accent mb-4">Practica: Escribe codigo Lua</h2>
+    <p class="text-sm text-forge-muted mb-6">
+      Pon en practica lo que aprendiste sobre tablas. Estos ejercicios se ejecutan en un
+      interprete Lua real en tu navegador.
+    </p>
+
+    <div class="space-y-6">
+      {#each playgroundExercises as exercise}
+        <CodePlayground {exercise} />
+      {/each}
     </div>
   </section>
 
